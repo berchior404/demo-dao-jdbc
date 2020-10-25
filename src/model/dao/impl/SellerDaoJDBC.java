@@ -65,7 +65,7 @@ public class SellerDaoJDBC implements SellerDao {
 
 	@Override
 	public void update(Seller obj) {
-PreparedStatement ps = null;
+		PreparedStatement ps = null;
 		
 		try {
 			ps = conn.prepareStatement("UPDATE seller "
@@ -93,14 +93,26 @@ PreparedStatement ps = null;
 
 	@Override
 	public void deleteById(Integer id) {
-		// TODO Auto-generated method stub
+		PreparedStatement ps = null;
 		
+		try {
+			ps = conn.prepareStatement("DELETE FROM seller WHERE Id = ?");
+			ps.setInt(1, id);
+			ps.executeUpdate();
+		}
+		catch (SQLException ex) {
+			throw new DbException(ex.getMessage());
+		}
+		finally {
+			DB.closeStatement(ps);
+		}
 	}
 
 	@Override
 	public Seller findById(Integer id) {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
+		
 		try {
 			ps = conn.prepareStatement(
 					"SELECT seller.*,department.Name as DepName "
@@ -148,6 +160,7 @@ PreparedStatement ps = null;
 	public List<Seller> findAll() {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
+		
 		try {
 			ps = conn.prepareStatement(
 					"SELECT seller.*,department.Name as DepName "
@@ -186,6 +199,7 @@ PreparedStatement ps = null;
 	public List<Seller> findByDepartment(Department department) {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
+		
 		try {
 			ps = conn.prepareStatement(
 					"SELECT seller.*,department.Name as DepName "
